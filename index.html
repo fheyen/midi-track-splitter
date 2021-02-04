@@ -26,6 +26,17 @@
             transform: scale(1.2);
         }
 
+        a,
+        a:visited,
+        a:hover {
+            color: #aaa;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: steelblue;
+        }
+
     </style>
 </head>
 
@@ -36,6 +47,9 @@
         Tracks without notes will be ignored, tempo signatures and more will be kept.
     </p>
     <input type="file" accept=".mid,.midi" oninput="handleFileSelect(event)" />
+    <p>
+        <a href="https://github.com/fheyen/midi-track-splitter">github.com/fheyen/midi-track-splitter</a>
+    </p>
 
     <script>
         /**

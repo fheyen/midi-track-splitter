@@ -2,7 +2,11 @@
 
 Splits a MIDI file into single files for each track while keeping tempo and other signature events
 
-## Setup & Usage
+## Online Version
+
+[fheyen.github.io/midi-track-splitter](https://fheyen.github.io/midi-track-splitter/)
+
+## CLI Setup & Usage
 
 ```bash
 
@@ -17,8 +21,4 @@ node index.js some_midi_file.mid
 
 ## Dependencies
 
-Uses [Tonejs/Midi](https://github.com/Tonejs/Midi) for parsing and [lodash](https://lodash.com/) for cloning.
-
-## TODO:
-
-- Host as website
+Uses [Tonejs/Midi](https://github.com/Tonejs/Midi) for parsing, [lodash](https://lodash.com/) for cloning, and [FileSaver.js](https://github.com/eligrey/FileSaver.js/) for downloads.
