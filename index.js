@@ -48,7 +48,7 @@ function splitIntoTracks(file) {
         const trackName = cleanUpForFileName(track.name);
         const fileName = nameWithoutExtension(file);
         const outputFile = `${fileName} track ${i} ${trackName}.mid`;
-        console.log(`Wrinting ${outputFile}`);
+        console.log(`Writing ${outputFile}`);
         fs.writeFileSync(outputFile, outputBinary);
     }
 }

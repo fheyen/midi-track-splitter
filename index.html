@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/@tonejs/midi"></script>
+    <script src="https://unpkg.com/lodash"></script>
+    <script src="https://unpkg.com/file-saver"></script>
+    <style>
+        body {
+            background-color: #333;
+            text-align: center;
+            font-size: 14;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #eee;
+        }
+
+        input {
+            margin: 20px;
+            padding: 3px;
+            background: #444;
+            border: none;
+            border-radius: 5px;
+            transform: scale(1.2);
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>MIDI Track Splitter</h1>
+    <p>
+        Open a MIDI file to split it into separate files, one for each track.
+        Tracks without notes will be ignored, tempo signatures and more will be kept.
+    </p>
+    <input type="file" accept=".mid,.midi" oninput="handleFileSelect(event)" />
+
+    <script>
+        /**
+         * Takes file name from last command line argument and runs splitter
+         */
+        async function handleFileSelect(event) {
+            event.preventDefault();
+            const file = event.target.files[0];
+            const fileName = file.name;
+            if (!fileName.endsWith('.mid') && !fileName.endsWith('.midi')) {
+                alert('File has to be .mid or .midi!');
+                return;
+            }
+            const buff = await file.arrayBuffer();
+            splitIntoTracks(fileName, buff);
+        }
+
+        /**
+         * Reads a MIDI file and writes files for tracks
+         *
+         * @param {string} file file path
+         */
+        function splitIntoTracks(file, midiData) {
+            console.log(`Reading ${file}`);
+
+            // Read and parse file
+            const midi = new Midi(midiData);
+            console.log(`${midi.tracks.length} tracks`);
+
+            for (let i = 0; i < midi.tracks.length; i++) {
+                const track = midi.tracks[i];
+                console.log(`\nTrack ${i} ${track.name}`);
+
+                // Skip tracks without notes
+                if (track.notes.length === 0) {
+                    console.log('No notes, will skip this track');
+                    continue;
+                }
+
+                // Remove all other tracks from result
+                const clone = _.cloneDeep(midi);
+                clone.tracks = clone.tracks = [track];
+
+                // Get file name
+                const trackName = cleanUpForFileName(track.name);
+                const fileName = nameWithoutExtension(file);
+                const outputFile = `${fileName} track ${i} ${trackName}.mid`;
+
+                // Download file
+                const array = clone.toArray();
+                const buffer = array.buffer;
+                const blob = new Blob([buffer], { type: 'audio/mid' });
+                saveAs(blob, outputFile);
+            }
+        }
+
+        /**
+         * Removes the file extension from a string
+         * @param {string} string a string
+         * @returns {string} cleaned up string
+         */
+        function nameWithoutExtension(string) {
+            const dotIndex = string.lastIndexOf('.');
+            if (dotIndex === -1) {
+                return string;
+            }
+            return string.slice(0, dotIndex);
+        }
+
+        // Get allowd characters for cleanUpForFileName()
+        const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => d.toString());
+        const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        const other = [' ', '-', '.', '_', ',', '(', ')'];
+        const allowedCharacters = new Set([...numbers, ...letters, ...letters.map(d => d.toUpperCase()), ...other]);
+
+        /**
+         * Allowed are only a-zA-z0-9, all other characters will be replaced by '_'
+         * @param {string} string a string
+         * @returns {string} cleaned up string
+         */
+        function cleanUpForFileName(string) {
+            if (!string || !string.length) { return ''; }
+            return string.split('')
+                .map(d => allowedCharacters.has(d) ? d : '_')
+                .join('');
+        }
+    </script>
+</body>
+
+</html>
