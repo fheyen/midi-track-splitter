@@ -1,0 +1,30 @@
+{
+  "name": "midi-track-splitter",
+  "version": "0.0.1",
+  "description": "Splits a MIDI file into separate files for all tracks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fheyen/midi-track-splitter.git"
+  },
+  "keywords": [
+    "MIDI",
+    "split",
+    "tracks",
+    "utility"
+  ],
+  "author": "Frank Heyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fheyen/midi-track-splitter/issues"
+  },
+  "homepage": "https://github.com/fheyen/midi-track-splitter#readme",
+  "dependencies": {
+    "@tonejs/midi": "^2.0.25",
+    "lodash": "^4.17.20"
+  }
+}
