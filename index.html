@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIDI Track Splitter</title>
     <script src="https://unpkg.com/@tonejs/midi"></script>
-    <script src="https://unpkg.com/lodash"></script>
     <script src="https://unpkg.com/file-saver"></script>
     <style>
         body {
@@ -83,8 +82,9 @@
             const midi = new Midi(midiData);
             console.log(`${midi.tracks.length} tracks`);
 
-            for (let i = 0; i < midi.tracks.length; i++) {
-                const track = midi.tracks[i];
+            const tracks = midi.tracks;
+            for (let i = 0; i < tracks.length; i++) {
+                const track = tracks[i];
                 console.log(`\nTrack ${i} ${track.name}`);
 
                 // Skip tracks without notes
@@ -94,8 +94,7 @@
                 }
 
                 // Remove all other tracks from result
-                const clone = _.cloneDeep(midi);
-                clone.tracks = clone.tracks = [track];
+                midi.tracks = [track];
 
                 // Get file name
                 const trackName = cleanUpForFileName(track.name);
@@ -103,7 +102,7 @@
                 const outputFile = `${fileName} track ${i} ${trackName}.mid`;
 
                 // Download file
-                const array = clone.toArray();
+                const array = midi.toArray();
                 const buffer = array.buffer;
                 const blob = new Blob([buffer], { type: 'audio/mid' });
                 saveAs(blob, outputFile);

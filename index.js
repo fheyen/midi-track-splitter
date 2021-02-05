@@ -1,6 +1,5 @@
 const fs = require('fs');
 const { Midi } = require('@tonejs/midi');
-const _ = require('lodash');
 const { nameWithoutExtension, cleanUpForFileName, } = require('./library');
 
 /**
@@ -22,16 +21,15 @@ function main() {
  * @param {string} file file path
  */
 function splitIntoTracks(file) {
-    // const file = path.join(__dirname, '[Drums] ACDC - You shook me all night long.mid');
     console.log(`Reading ${file}`);
 
     // Read and parse file
     const midiData = fs.readFileSync(file);
     const midi = new Midi(midiData);
-    console.log(`${midi.tracks.length} tracks`);
-
-    for (let i = 0; i < midi.tracks.length; i++) {
-        const track = midi.tracks[i];
+    const tracks = midi.tracks;
+    console.log(`${tracks.length} tracks`);
+    for (let i = 0; i < tracks.length; i++) {
+        const track = tracks[i];
         console.log(`\nTrack ${i} ${track.name}`);
 
         // Skip tracks without notes
@@ -41,11 +39,10 @@ function splitIntoTracks(file) {
         }
 
         // Remove all other tracks from result
-        const clone = _.cloneDeep(midi);
-        clone.tracks = clone.tracks = [track];
+        midi.tracks = [track];
 
         // Write file
-        const outputBinary = Buffer.from(clone.toArray());
+        const outputBinary = Buffer.from(midi.toArray());
         const trackName = cleanUpForFileName(track.name);
         const fileName = nameWithoutExtension(file);
         const outputFile = `${fileName} track ${i} ${trackName}.mid`;

@@ -29,4 +29,4 @@ node batch_splitter.js source_directory target_directory
 
 ## Dependencies
 
-Uses [Tonejs/Midi](https://github.com/Tonejs/Midi) for parsing, [lodash](https://lodash.com/) for cloning, and [FileSaver.js](https://github.com/eligrey/FileSaver.js/) for downloads.
+Uses [Tonejs/Midi](https://github.com/Tonejs/Midi) for parsing and [FileSaver.js](https://github.com/eligrey/FileSaver.js/) for downloads.

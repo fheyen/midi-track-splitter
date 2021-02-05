@@ -2,7 +2,6 @@ const fs = require('fs');
 const { Midi } = require('@tonejs/midi');
 const glob = require('glob');
 const path = require('path');
-const _ = require('lodash');
 const { nameWithoutExtension, cleanUpForFileName, } = require('./library');
 
 /**
@@ -56,15 +55,12 @@ function ensureDirectoryExistence(filePath) {
  * @param {string} file file path
  */
 function splitIntoTracks(file, sourceDir, targetDir) {
-    // const file = path.join(__dirname, '[Drums] ACDC - You shook me all night long.mid');
-
     // Read and parse file
     const midiData = fs.readFileSync(file);
     const midi = new Midi(midiData);
-
-    for (let i = 0; i < midi.tracks.length; i++) {
-        const track = midi.tracks[i];
-        // console.log(`\n   Track ${i} ${track.name}`);
+    const tracks = midi.tracks;
+    for (let i = 0; i < tracks.length; i++) {
+        const track = tracks[i];
 
         // Skip tracks without notes
         if (track.notes.length === 0) {
@@ -72,23 +68,28 @@ function splitIntoTracks(file, sourceDir, targetDir) {
             continue;
         }
 
-        // Remove all other tracks from result
-        const clone = _.cloneDeep(midi);
-        clone.tracks = clone.tracks = [track];
-
-        // Write file
-        const outputBinary = Buffer.from(clone.toArray());
+        // Get new path
         const trackName = cleanUpForFileName(track.name);
         const fileName = nameWithoutExtension(file);
-
         // Fix windows paths with \ messing up replace
         const s = sourceDir.replaceAll('\\', '/');
         const relative = fileName.replace(s, '');
         const target = path.join(targetDir, relative);
         const outputFile = `${target} track ${i} ${trackName}.mid`;
 
+        // Skip existing files
+        if (fs.existsSync(outputFile)) {
+            // console.log('skipping existing file');
+            continue;
+        }
+
+        // Remove all other tracks from result
+        midi.tracks = [track];
+
+        // Write file
         // console.log(`   Writing ${outputFile}`);
         ensureDirectoryExistence(outputFile);
+        const outputBinary = Buffer.from(midi.toArray());
         fs.writeFileSync(outputFile, outputBinary);
     }
 }
