@@ -15,8 +15,16 @@ git clone https://github.com/fheyen/midi-track-splitter
 cd midi-track-splitter
 npm install
 
-# Only one file at a time supported
+# Only one file at a time
 node index.js some_midi_file.mid
+```
+
+## Batch Splitting
+
+Will mirror the directory tree.
+
+```bash
+node batch_splitter.js source_directory target_directory
 ```
 
 ## Dependencies

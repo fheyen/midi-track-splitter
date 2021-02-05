@@ -25,6 +25,7 @@
   "homepage": "https://github.com/fheyen/midi-track-splitter#readme",
   "dependencies": {
     "@tonejs/midi": "^2.0.25",
+    "glob": "^7.1.6",
     "lodash": "^4.17.20"
   }
 }
